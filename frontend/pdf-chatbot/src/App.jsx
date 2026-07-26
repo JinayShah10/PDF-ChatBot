@@ -23,7 +23,7 @@ function App() {
 
     try {
       const { data } = await axios.post(
-        `${import.meta.env.VITE_API_URL}/ask`,
+        'https://pdf-chatbot-backend-nsd5.onrender.com/ask',
         formData
       )
 

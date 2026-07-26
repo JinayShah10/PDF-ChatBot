@@ -11,7 +11,7 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 # Data Embedding + Vector Store
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_community.vectorstores import FAISS
 
 # LLM Model
@@ -22,8 +22,9 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 
 
-embeddings = HuggingFaceEmbeddings(
-    model="all-MiniLM-L6-v2"
+embeddings = GoogleGenerativeAIEmbeddings(
+    model="models/gemini-embedding-001",
+    google_api_key=os.getenv("GOOGLE_API_KEY")
 )
 
 llm = ChatGroq(
@@ -71,9 +72,11 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
+
 @app.get("/")
 def home():
     return {"message": "PDF Chatbot Backend is running"}
+
 
 @app.post("/ask")
 def ask(
@@ -85,6 +88,7 @@ def ask(
     print(file.filename)
 
     temp_file_path = None
+
     try:
         with tempfile.NamedTemporaryFile(
             delete=False,
@@ -96,6 +100,7 @@ def ask(
 
         pdf_loader = PyPDFLoader(temp_file_path)
         data = pdf_loader.load()
+
     finally:
         if temp_file_path and os.path.exists(temp_file_path):
             os.remove(temp_file_path)
@@ -131,6 +136,13 @@ def ask(
         "answer": response.content
     }
 
+
 import uvicorn
+
 port = int(os.getenv("PORT", 8000))
-uvicorn.run(app, host="0.0.0.0", port=port)
+
+uvicorn.run(
+    app,
+    host="0.0.0.0",
+    port=port
+)

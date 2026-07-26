@@ -106,7 +106,7 @@ def ask(
             os.remove(temp_file_path)
 
     text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=800,
+        chunk_size=500,
         chunk_overlap=50
     )
 

@@ -1,0 +1,39 @@
+# Dependency directories
+node_modules/
+*/node_modules/
+
+# Build outputs
+dist/
+dist-ssr/
+*.local
+
+# Environment variables
+.env
+.env.*
+!.env.example
+*/.env
+*/.env.*
+!*/.env.example
+
+# Python virtual environments
+venv/
+.venv/
+env/
+ENV/
+ai-pipeline/venv/
+
+# Python cache / logs
+__pycache__/
+*.py[cod]
+*$py.class
+*.log
+
+# Editor / System files
+.DS_Store
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

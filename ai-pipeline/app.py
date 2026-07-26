@@ -67,7 +67,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[os.getenv("FRONTEND_URL", "http://localhost:5173")],
+    allow_origins=[os.getenv("https://pdf-chatbot-frontend-ufa7.onrender.com", "http://localhost:5173")],
     allow_methods=["*"],
     allow_headers=["*"]
 )

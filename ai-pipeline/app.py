@@ -118,7 +118,7 @@ def ask(
     )
 
     retriever = db.as_retriever(
-        search_kwargs={"k": 2}
+        search_kwargs={"k": 5}
     )
 
     chain = (

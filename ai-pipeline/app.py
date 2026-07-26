@@ -106,7 +106,7 @@ def ask(
             os.remove(temp_file_path)
 
     text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=400,
+        chunk_size=800,
         chunk_overlap=50
     )
 
@@ -118,7 +118,7 @@ def ask(
     )
 
     retriever = db.as_retriever(
-        search_kwargs={"k": 5}
+        search_kwargs={"k": 2}
     )
 
     chain = (

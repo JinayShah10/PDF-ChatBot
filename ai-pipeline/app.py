@@ -62,6 +62,7 @@ Strict rules:
 9. If the answer cannot be found in the context, respond exactly:
 "I could not find the answer to this question in the uploaded PDF."
 10. Do not guess or make up an answer.
+11. If the user asks explicitly to use your external knowledge to provide ratings or if the user mentions its not in the context then only use your external knowledge.
 
 Context:
 {context}

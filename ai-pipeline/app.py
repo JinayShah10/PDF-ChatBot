@@ -16,6 +16,7 @@ from langchain_community.vectorstores import FAISS
 
 # LLM Model
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_groq import ChatGroq
 
 # Prompt Template
 from langchain_core.prompts import ChatPromptTemplate
@@ -23,15 +24,25 @@ from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 
 
-embeddings = GoogleGenerativeAIEmbeddings(
-    model="models/gemini-embedding-001",
-    google_api_key=os.getenv("GOOGLE_API_KEY")
-)
+embedding_models = [
+    "models/gemini-embedding-001",
+    "models/gemini-embedding-2"
+]
 
-llm = ChatGoogleGenerativeAI(
+primary_llm = ChatGoogleGenerativeAI(
     model="gemini-3.5-flash-lite",
     google_api_key=os.getenv("GOOGLE_API_KEY")
 )
+fallback_gemini = ChatGoogleGenerativeAI(
+    model="gemini-3.5-flash",
+    google_api_key=os.getenv("GOOGLE_API_KEY")
+)
+fallback_groq = ChatGroq(
+    model="openai/gpt-oss-20b",
+    groq_api_key=os.getenv("GROQ_API_KEY")
+)
+
+llm = primary_llm.with_fallbacks([fallback_gemini, fallback_groq])
 
 
 prompt = ChatPromptTemplate.from_template("""
@@ -113,10 +124,20 @@ def ask(
 
     data_docs = text_splitter.split_documents(data)
 
-    db = FAISS.from_documents(
-        data_docs,
-        embeddings
-    )
+    db = None
+    for emb_model in embedding_models:
+        try:
+            emb = GoogleGenerativeAIEmbeddings(
+                model=emb_model,
+                google_api_key=os.getenv("GOOGLE_API_KEY")
+            )
+            db = FAISS.from_documents(data_docs, emb)
+            break
+        except Exception as e:
+            print(f"Embedding failed with {emb_model}: {e}")
+
+    if db is None:
+        raise RuntimeError("All embedding models failed.")
 
     retriever = db.as_retriever(
         search_kwargs={"k": 5}

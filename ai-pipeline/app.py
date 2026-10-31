@@ -20,6 +20,7 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 # Prompt Template
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
+from langchain_core.output_parsers import StrOutputParser
 
 
 embeddings = GoogleGenerativeAIEmbeddings(
@@ -28,7 +29,7 @@ embeddings = GoogleGenerativeAIEmbeddings(
 )
 
 llm = ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash-lite",
+    model="gemini-3.5-flash-lite",
     google_api_key=os.getenv("GOOGLE_API_KEY")
 )
 
@@ -128,12 +129,13 @@ def ask(
         }
         | prompt
         | llm
+        | StrOutputParser()
     )
 
     response = chain.invoke(question)
 
     return {
-        "answer": response.content
+        "answer": str(response)
     }
 
 

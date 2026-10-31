@@ -15,7 +15,7 @@ from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_community.vectorstores import FAISS
 
 # LLM Model
-from langchain_groq import ChatGroq
+from langchain_google_genai import ChatGoogleGenerativeAI
 
 # Prompt Template
 from langchain_core.prompts import ChatPromptTemplate
@@ -27,9 +27,9 @@ embeddings = GoogleGenerativeAIEmbeddings(
     google_api_key=os.getenv("GOOGLE_API_KEY")
 )
 
-llm = ChatGroq(
-    model="llama-3.1-8b-instant",
-    groq_api_key=os.getenv("GROQ_API_KEY")
+llm = ChatGoogleGenerativeAI(
+    model="gemini-2.5-flash-lite",
+    google_api_key=os.getenv("GOOGLE_API_KEY")
 )
 
 
